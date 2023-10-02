@@ -5,8 +5,8 @@ Charmander,fire,39,52,43,65,0.6,8.5,87.5,1,,,
 Squirtle,water,44,48,65,43,0.5,9,87.5,1,,,
 Bulbasaur,grass,45,49,49,45,0.7,6.9,87.5,1,,,
 Metagross,steel,80,135,130,70,1.6,550,genderless,3,,,
-Zoroark,dark,60,105,60,105,1.6,81.1,87.5,5,,,Pokeballs
-Tyranitar,rock,100,134,110,61,2,202,50,2,,,high speed ( > 110)
+Zoroark,dark,60,105,60,105,1.6,81.1,87.5,5,,,
+Tyranitar,rock,100,134,110,61,2,202,50,2,,,
 Eevee,normal,55,55,50,55,0.3,6.5,87.5,1,,,
 Snorlax,normal,160,110,65,30,2.1,460,87.5,1,,,
 Volcarona,bug,85,60,65,100,1.6,46,50,5,,,
