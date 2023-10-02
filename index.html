@@ -187,14 +187,14 @@
     const svg2 = d3.select("svg#graph2");
     const height2 = svg2.attr("height");
     const width2 = svg2.attr("width");
-    const twoPi = Math.PI * 2;
-    const percentage = 75
+    //Percent of pokeball fill
+    const percentage = 70
     const imageSize = 230
 
     let changeScale = d3.scaleLinear()
       .domain([0, 4])
       .range([0, width2]);
-
+    //Adds Title to Graph
     svg2.append('text')
       .text("Pokemon Pies")
       .attr('font-size', 30)
@@ -203,26 +203,28 @@
       .style("text-anchor", "middle");
 
     for (let i = 0; i < 4; i++) {
+      //Adds Pokeball image
       svg2.append('image')
         .attr('xlink:href', "pokeball.png")
         .attr('x', changeScale(i))
         .attr('y', height2 / 2 - (imageSize / 2))
         .attr('width', imageSize)
         .attr('height', imageSize);
+      //Adds overlay to pokeball
       svg2.append("path")
         .attr("d", d3.arc()({
           innerRadius: 0,
           outerRadius: 100,
           startAngle: 0,
-          endAngle: ((100 - percentage) / 100) * twoPi
+          endAngle: ((100 - percentage) / 100) * 2 * Math.PI
         }))
-        // .attr("transform", `translate(${changeScale(i) + 115},${height2 / 2})`)
-        .attr("transform", "translate(" + (parseInt(changeScale(i)) + 115) + "," + (height2 / 2) + ")")
+        .attr("transform", `translate(${parseInt(changeScale(i)) + imageSize / 2},${height2 / 2})`)
         .attr("fill", "beige");
+      //Adds Pies Name
       svg2.append('text')
         .text("Q" + (i + 1))
         .attr('font-size', 30)
-        .attr('x', (parseInt(changeScale(i)) + 115))
+        .attr('x', (parseInt(changeScale(i)) + imageSize / 2))
         .attr('y', 500)
         .style("text-anchor", "middle");
     }
