@@ -20,7 +20,7 @@
   <svg id="graph1" height="700" width="1000" style="background:beige"></svg>
   <script>
     const svg = d3.select('svg#graph1');
-    const margins = { top: 10, right: 10, bottom: 50, left: 50 };
+    const margins = { top: 10, right: 10, bottom: 10, left: 10 };
     const chartWidth = svg.attr("width") - margins.right - margins.left;
     const chartHeight = svg.attr("height") - margins.top - margins.bottom;
 
@@ -44,12 +44,17 @@
         .call(horizontalAxis);
 
       data.forEach(d => {
-        svg.append("rect")
-          .attr("x", xScale(d.attack) + margins.left)
-          .attr("y", yScale(d.hp) + margins.top)
-          .attr("height", 10)
-          .attr("width", 10)
-          .style("fill", 'teal');
+        let x = xScale(d.attack);
+        let y = yScale(d.hp);
+        if (x > attackExtent[1]) {
+          console.log(x);
+        }
+        svg.append("svg:image")
+          .attr('x', x)
+          .attr('y', y)
+          .attr('width', 50)
+          .attr('height', 50)
+          .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg")
       });
     });
   </script>
