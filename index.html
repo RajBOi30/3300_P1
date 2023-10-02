@@ -30,7 +30,7 @@
       const attackExtent = d3.extent(data, d => Number(d.attack));
       const hpExtent = d3.extent(data, d => Number(d.hp));
 
-      const xScale = d3.scaleLinear().domain([attackExtent[0] - 10, attackExtent[1]]).range([0, chartWidth]);
+      const xScale = d3.scaleLinear().domain([attackExtent[0] - 5, attackExtent[1]]).range([0, chartWidth]);
       const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
 
       let verticalAxis = d3.axisLeft(yScale);
@@ -43,18 +43,76 @@
         .attr('transform', `translate(${margins.left}, ${margins.top + chartHeight / 2})`)
         .call(horizontalAxis);
 
+      svg.append('text')
+        .text("Hunky Chunky")
+        .attr('font-size', 30)
+        .attr('x', chartWidth - 200)
+        .attr('y', 50);
+      svg.append('text')
+        .text("High Damage, Low Health")
+        .attr('font-size', 20)
+        .attr('x', chartWidth - 200)
+        .attr('y', chartHeight);
+      svg.append('text')
+        .text("Low Damage, High Health")
+        .attr('font-size', 20)
+        .attr('x', 0)
+        .attr('y', 20);
+      svg.append('text')
+        .text("Low Damage, Low Health")
+        .attr('font-size', 20)
+        .attr('x', 0)
+        .attr('y', chartHeight);
+
+
+      function jitter() {
+        return (Math.random() * 20) - 10;
+      }
+
+      var colorMap = {};
+      colorMap['normal'] = 'pink';
+      colorMap['fire'] = 'orange';
+      colorMap['water'] = 'blue';
+      colorMap['grass'] = 'green';
+      colorMap['electric'] = 'yellow';
+      colorMap['fighting'] = 'red';
+      colorMap['ground'] = 'brown';
+      colorMap['psychic'] = 'magenta';
+      colorMap['bug'] = 'light green';
+      colorMap['dragon'] = 'dark blue';
+      colorMap['rock'] = 'gray';
+      colorMap['ghost'] = 'dark purple';
+      colorMap['dark'] = 'black';
+      colorMap['steel'] = 'light blue';
+
       data.forEach(d => {
-        let x = xScale(d.attack);
-        let y = yScale(d.hp);
-        if (x > attackExtent[1]) {
-          console.log(x);
+        let x = xScale(d.attack) + jitter();
+        let y = yScale(d.hp) + jitter();
+
+        if (x > 900) {
+          x -= 50;
         }
-        svg.append("svg:image")
+        if (y > 600) {
+          y -= 50;
+        }
+
+        let color = colorMap[d.type];
+
+        svg.append("mask")
+          .attr("id", "image-mask" + d.name)
+          .append("image")
           .attr('x', x)
           .attr('y', y)
           .attr('width', 50)
           .attr('height', 50)
-          .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg")
+          .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg");
+
+        // Add purple rectangle to be clipped by the mask
+        svg.append("rect")
+          .attr("fill", color)
+          .attr("width", "100%")
+          .attr("height", "100%")
+          .attr("mask", "url(#image-mask" + d.name + ")"); // Apply mask
       });
     });
   </script>
