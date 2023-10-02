@@ -129,7 +129,7 @@
         .attr('height', keyHeight)
         .attr('fill', "white");
 
-        const typeColors = [
+      const typeColors = [
         { type: 'normal', color: 'pink' },
         { type: 'fire', color: 'orange' },
         { type: 'water', color: 'blue' },
@@ -182,7 +182,7 @@
   <h3>
     Graph 2: Visualizing the relationship between quadrant and speed.
   </h3>
-  <svg id="graph2" height="400" width="920" style="background:beige"></svg>
+  <svg id="graph2" height="600" width="920" style="background:beige"></svg>
   <script>
     const svg2 = d3.select("svg#graph2");
     const height2 = svg2.attr("height");
@@ -195,6 +195,14 @@
       .domain([0, 4])
       .range([0, width2]);
 
+    svg2.append('text')
+      .text("Pokemon Pies")
+      .attr('font-size', 30)
+      .attr('x', width2 / 2)
+      .attr('y', 100)
+      .style("text-anchor", "middle");
+
+
     for (let i = 0; i < 4; i++) {
       svg2.append('image')
         .attr('xlink:href', "pokeball.png")
@@ -203,14 +211,15 @@
         .attr('width', imageSize)
         .attr('height', imageSize);
       svg2.append("path")
-        .attr("transform", `translate(${changeScale(i)},${height2 / 2 - (imageSize / 2)})`)
         .attr("d", d3.arc()({
           innerRadius: 0,
           outerRadius: 100,
           startAngle: 0,
           endAngle: ((100 - percentage) / 100) * twoPi
         }))
-        .attr("fill", "white");
+        // .attr("transform", `translate(${changeScale(i) + 115},${height2 / 2})`)
+        .attr("transform", "translate(" + (parseInt(changeScale(i)) + 115) + "," + (height2 / 2) + ")")
+        .attr("fill", "beige");
     }
   </script>
 
