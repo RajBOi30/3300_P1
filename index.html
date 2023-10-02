@@ -114,6 +114,69 @@
           .attr("height", "100%")
           .attr("mask", "url(#image-mask" + d.name + ")"); // Apply mask
       });
+
+      //key rectangle
+
+      const keyXPos = chartWidth - 200;
+      const keyYPos = chartHeight - 220;
+      const keyWidth = 200;
+      const keyHeight = 180;
+
+      svg.append('rect')
+        .attr('x', keyXPos)
+        .attr('y', keyYPos)
+        .attr('width', keyWidth)
+        .attr('height', keyHeight)
+        .attr('fill', "white");
+
+        const typeColors = [
+        { type: 'normal', color: 'pink' },
+        { type: 'fire', color: 'orange' },
+        { type: 'water', color: 'blue' },
+        { type: 'grass', color: 'green' },
+        { type: 'electric', color: 'yellow' },
+        { type: 'fighting', color: 'red' },
+        { type: 'ground', color: 'brown' },
+        { type: 'psychic', color: 'magenta' },
+        { type: 'bug', color: 'lightgreen' },
+        { type: 'dragon', color: 'darkblue' },
+        { type: 'rock', color: 'gray' },
+        { type: 'ghost', color: 'darkpurple' },
+        { type: 'dark', color: 'black' },
+        { type: 'steel', color: 'lightblue' },
+      ];
+
+      //svg for key
+      const key = svg.append('g').attr('class', 'key').attr('transform', 'translate(10, 10)');
+
+      //two columns for key
+      const columns = key.selectAll('.column')
+        .data([typeColors.slice(0, Math.ceil(typeColors.length / 2)), typeColors.slice(Math.ceil(typeColors.length / 2))])
+        .enter()
+        .append('g')
+        .attr('class', 'column')
+        .attr('transform', (d, i) => `translate(${i * 100}, 0)`);
+
+      columns.each(function (columnData, columnIndex) {
+        d3.select(this).selectAll('.key-item')
+          .data(columnData)
+          .enter()
+          .append('g')
+          .attr('class', 'key-item')
+          .attr('transform', (d, i) => `translate(0, ${i * 20})`)
+          .append('circle')
+          .attr('cx', chartWidth - keyWidth + 18)
+          .attr('cy', chartHeight - keyHeight - 20)
+          .attr('r', 7)
+          .attr('fill', d => d.color);
+
+        d3.select(this).selectAll('.key-item')
+          .append('text')
+          .attr('x', chartWidth - keyWidth + 28)
+          .attr('y', (d, i) => chartHeight - keyHeight - 16.5)
+          .text(d => d.type);
+      });
+
     });
   </script>
   <h3>
