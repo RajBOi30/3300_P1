@@ -188,7 +188,7 @@
     const height2 = svg2.attr("height");
     const width2 = svg2.attr("width");
     const twoPi = Math.PI * 2;
-    const percentage = 60
+    const percentage = 75
     const imageSize = 230
 
     let changeScale = d3.scaleLinear()
@@ -201,7 +201,6 @@
       .attr('x', width2 / 2)
       .attr('y', 100)
       .style("text-anchor", "middle");
-
 
     for (let i = 0; i < 4; i++) {
       svg2.append('image')
@@ -220,6 +219,12 @@
         // .attr("transform", `translate(${changeScale(i) + 115},${height2 / 2})`)
         .attr("transform", "translate(" + (parseInt(changeScale(i)) + 115) + "," + (height2 / 2) + ")")
         .attr("fill", "beige");
+      svg2.append('text')
+        .text("Q" + (i + 1))
+        .attr('font-size', 30)
+        .attr('x', (parseInt(changeScale(i)) + 115))
+        .attr('y', 500)
+        .style("text-anchor", "middle");
     }
   </script>
 
