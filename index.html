@@ -56,6 +56,45 @@
   <h3>
     Graph 2: Visualizing the relationship between quadrant and speed.
   </h3>
+  <svg id="graph2" height="700" width="1000" style="background:beige"></svg>
+  <script>
+    const svg2 = d3.select("svg#graph2");
+    const height2 = svg.attr("height");
+    const width2 = svg.attr("width");
+    const margins2 = { top: 10, right: 10, bottom: 50, left: 50 };
+    const chartWidth2 = width2 - margins2.right - margins2.left;
+    const chartHeight2 = height2 - margins2.top - margins2.bottom;
+    const twoPi = Math.PI * 2;
+    const percentage = 60
+    const imageSize = 230
+
+    // var pokeball = svg2.append('image')
+    //   .attr('xlink:href', "pokeball.png")
+    //   .attr('x', 250 - imageSize / 2)
+    //   .attr('y', 250 - imageSize / 2)
+    //   .attr('width', imageSize)
+    //   .attr('height', imageSize);
+
+    svg2.append("path")
+      .attr("transform", "translate(250,250)")
+      .attr("d", d3.arc()({
+        innerRadius: 0,
+        outerRadius: 100,
+        startAngle: 0,
+        endAngle: ((100 - percentage) / 100) * twoPi
+      }))
+      .attr("fill", "beige");
+
+    for (let i = 0; i < 4; i++) {
+      var pokeball = svg2.append('image')
+        .attr('xlink:href', "pokeball.png")
+        .attr('x', chartWidth2 / 4 * i)
+        .attr('y', 350 - (imageSize / 2))
+        .attr('width', imageSize)
+        .attr('height', imageSize);
+    }
+  </script>
+
 
 </body>
 
