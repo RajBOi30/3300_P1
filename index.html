@@ -17,6 +17,42 @@
   <h3>
     Graph 1: Visualizing the relationship between Pokemon Health and Damage.
   </h3>
+  <svg id="graph1" height="700" width="1000" style="background:beige"></svg>
+  <script>
+    const svg = d3.select('svg#graph1');
+    const margins = { top: 10, right: 10, bottom: 50, left: 50 };
+    const chartWidth = svg.attr("width") - margins.right - margins.left;
+    const chartHeight = svg.attr("height") - margins.top - margins.bottom;
+
+    d3.csv('pokemon_data.csv').then(data => {
+      console.log(data);
+
+      const attackExtent = d3.extent(data, d => Number(d.attack));
+      const hpExtent = d3.extent(data, d => Number(d.hp));
+
+      const xScale = d3.scaleLinear().domain([attackExtent[0] - 10, attackExtent[1]]).range([0, chartWidth]);
+      const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
+
+      let verticalAxis = d3.axisLeft(yScale);
+      svg.append('g')
+        .attr('transform', `translate(${margins.left + chartWidth / 2}, ${margins.top})`)
+        .call(verticalAxis);
+
+      let horizontalAxis = d3.axisBottom(xScale);
+      svg.append('g')
+        .attr('transform', `translate(${margins.left}, ${margins.top + chartHeight / 2})`)
+        .call(horizontalAxis);
+
+      data.forEach(d => {
+        svg.append("rect")
+          .attr("x", xScale(d.attack) + margins.left)
+          .attr("y", yScale(d.hp) + margins.top)
+          .attr("height", 10)
+          .attr("width", 10)
+          .style("fill", 'teal');
+      });
+    });
+  </script>
   <h3>
     Graph 2: Visualizing the relationship between quadrant and speed.
   </h3>
