@@ -47,7 +47,9 @@
 <body>
   <svg id="title1" height="100" width="1000" style="background:#A6A1FA"></svg>
   <svg id="graph1" height="700" width="1000" style="background:#201C67"></svg>
-  <svg id="graph2" height="600" width="920" style="background:#4C4A82"></svg>
+  <svg id="space" height="200" width="1000" style="background:white"></svg>
+  <svg id="title2" height="100" width="1000" style="background:#A6A1FA"></svg>
+  <svg id="graph2" height="500" width="1000" style="background:#4C4A82"></svg>
   <script>
 
     const title1 = d3.select('svg#title1');
@@ -102,14 +104,12 @@
         const xScale = d3.scaleLinear().domain([attackExtent[0] - 5, attackExtent[1]]).range([0, chartWidth]);
         const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
 
-
         // arrows
         let verticalAxis = d3.axisLeft(yScale);
         let yAxisGroup = svg.append('g')
           .attr('transform', `translate(${margins.left + chartWidth / 2}, ${margins.top})`)
           .attr('class', 'gridlines')
           .call(verticalAxis);
-
 
         let horizontalAxis = d3.axisBottom(xScale);
         let xAxisGroup = svg.append('g')
@@ -124,34 +124,34 @@
           .style('stroke', '#A6A1FA');
 
 
-
         svg.append('text')
           .text("Offensive Juggernauts")
-          .attr('x', chartWidth - 180)
+          .attr('x', chartWidth - 10)
           .attr('y', 50)
           .style('text-anchor', 'end')
           .attr('class', 'quadrant-title');
         svg.append('text')
           .text("Glass Cannons")
-          .attr('x', chartWidth - 180)
+          .attr('x', chartWidth - 10)
           .attr('y', chartHeight)
+          .style('text-anchor', 'end')
           .attr('class', 'quadrant-title');
         svg.append('text')
           .text("Tanks")
-          .attr('x', 40)
+          .attr('x', 20)
           .attr('y', 50)
+          .style('text-anchor', 'start')
           .attr('class', 'quadrant-title');
         svg.append('text')
           .text("Fragile Bois")
-          .attr('x', 40)
+          .attr('x', 20)
           .attr('y', chartHeight)
+          .style('text-anchor', 'start')
           .attr('class', 'quadrant-title');
 
 
-
-
         function jitter() {
-          return (Math.random() * 20) - 10;
+          return (Math.random() * 10) - 5;
         }
 
         var colorMap = {};
@@ -173,7 +173,6 @@
         data.forEach(d => {
           let x = xScale(d.attack) + jitter();
           let y = yScale(d.hp) + jitter();
-
           if (x > 900) {
             x -= 50;
           }
@@ -209,8 +208,6 @@
             .style('opacity', 0.7)
             .style('text-align', 'center');
         });
-
-
 
         data.forEach(d => {
           let x = d.attack;
@@ -300,11 +297,12 @@
         //svg for key
         const key = svg.append('g').attr('class', 'key').attr('transform', 'translate(10, 10)');
         svg.append('text').text("Pokemon Type")
-          .attr('x', chartWidth - 185)
+          .attr('x', chartWidth - 100)
           .attr('y', chartHeight - 200)
           .style('font-family', 'Arial')
           .style('fill', 'white')
           .style('font-weight', 'bold')
+          .style('text-anchor', 'middle')
           .style('font-size', '16');
 
         //two columns for key
@@ -321,7 +319,7 @@
             .enter()
             .append('g')
             .attr('class', 'key-item')
-            .attr('transform', (d, i) => `translate(0, ${i * 20})`)
+            .attr('transform', (d, i) => `translate(0, ${i * 20 + 5})`)
             .append('circle')
             .attr('cx', chartWidth - keyWidth + 12)
             .attr('cy', chartHeight - keyHeight + 10)
@@ -339,30 +337,40 @@
         });
 
       });
+      const title2 = d3.select('svg#title2');
       const svg2 = d3.select("svg#graph2");
       const height2 = svg2.attr("height");
       const width2 = svg2.attr("width");
       //Percent of pokeball fill
-      const percentage = 70
       const imageSize = 230
+
+      title2.append('text')
+        .text("High Speed Pokemon Percentages")
+        .attr('x', width2 / 2)
+        .attr('y', 48)
+        .style('font-family', 'Impact')
+        .style('font-size', '32')
+        .style("text-anchor", "middle")
+        .style('fill', '#201C67');
 
       let changeScale = d3.scaleLinear()
         .domain([0, 4])
         .range([0, width2]);
       //Adds Title to Graph
-      svg2.append('text')
-        .text("High Speed Pokemon Percentages")
+      title2.append('text')
+        .text("Pokemon's speed in each quartile that are above average of 66")
         .attr('font-size', 30)
         .attr('x', width2 / 2)
-        .attr('y', 100)
-        .style("text-anchor", "middle");
+        .attr('y', 72)
+        .style("text-anchor", "middle")
+        .attr('class', 'description');
 
       // calculate percentage with high speed per quadrant
       const percentages = [
-        quad1_speed / quad1_count * 100,
-        quad2_speed / quad2_count * 100,
-        quad3_speed / quad3_count * 100,
-        quad4_speed / quad4_count * 100,
+        Math.round(quad1_speed / quad1_count * 100),
+        Math.round(quad2_speed / quad2_count * 100),
+        Math.round(quad3_speed / quad3_count * 100),
+        Math.round(quad4_speed / quad4_count * 100),
       ];
 
       const quad_names = [
@@ -395,14 +403,20 @@
           .text(quad_names[i])
           .attr('font-size', 30)
           .attr('x', (parseInt(changeScale(i)) + imageSize / 2))
-          .attr('y', 500)
+          .attr('y', 425)
           .style("text-anchor", "middle")
-          .attr('class', 'pie-title');
+          .attr('class', 'pie_title');
+        //Adds Percentage
+        svg2.append('text')
+          .text(percentages[i] + "%")
+          .attr('font-size', 30)
+          .attr('x', (parseInt(changeScale(i)) + imageSize / 2))
+          .attr('y', 100)
+          .style("text-anchor", "middle")
+          .attr('class', 'pie_title');
       }
     }
-
     loadPokeball();
-
   </script>
 
 
