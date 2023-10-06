@@ -47,9 +47,9 @@
 <body>
   <svg id="title1" height="100" width="1000" style="background:#A6A1FA"></svg>
   <svg id="graph1" height="700" width="1000" style="background:#201C67"></svg>
-  <svg id="space" height="200" width="1000" style="background:white"></svg>
+  <svg id="space" height="100" width="1000" style="background:white"></svg>
   <svg id="title2" height="100" width="1000" style="background:#A6A1FA"></svg>
-  <svg id="graph2" height="500" width="1000" style="background:#4C4A82"></svg>
+  <svg id="graph2" height="500" width="1000" style="background:#201C67"></svg>
   <script>
 
     const title1 = d3.select('svg#title1');
@@ -358,12 +358,19 @@
         .range([0, width2]);
       //Adds Title to Graph
       title2.append('text')
-        .text("Pokemon's speed in each quartile that are above average of 66")
+        .text("Step into the captivating realm of the Pokeball, where we delve into the speed of these extraordinary creatures. Remarkably, each Pokeball")
         .attr('font-size', 30)
         .attr('x', width2 / 2)
         .attr('y', 72)
         .style("text-anchor", "middle")
         .attr('class', 'description');
+
+      title2.append('text')
+        .text(" highlights those of speed above the the average of 66 for each quartile, revealing the elite champions among these Pokemons.")
+        .attr('x', width2 / 2)
+        .attr('y', 88)
+        .attr('class', 'description')
+        .style("text-anchor", "middle");
 
       // calculate percentage with high speed per quadrant
       const percentages = [
