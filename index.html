@@ -5,6 +5,7 @@
   <style>
     .gridlines {
       stroke: #A6A1FA;
+      opacity: .8;
     }
 
     .gridlines line {
@@ -104,6 +105,7 @@
         const xScale = d3.scaleLinear().domain([attackExtent[0] - 5, attackExtent[1]]).range([0, chartWidth]);
         const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
 
+
         // arrows
         let verticalAxis = d3.axisLeft(yScale);
         let yAxisGroup = svg.append('g')
@@ -124,8 +126,9 @@
           .style('stroke', '#A6A1FA');
 
 
+
         svg.append('text')
-          .text("Offensive Juggernauts")
+          .text("Juggernauts")
           .attr('x', chartWidth - 10)
           .attr('y', 50)
           .style('text-anchor', 'end')
@@ -148,10 +151,27 @@
           .attr('y', chartHeight)
           .style('text-anchor', 'start')
           .attr('class', 'quadrant-title');
-
-
+        svg.append('text')
+          .text('Health Points')
+          .attr('x', (chartWidth / 2) - 45)
+          .attr('y', 20)
+          .style('font-family', 'Arial')
+          .style('fill', '#A6A1FA')
+          .style('font-weight', 'bold')
+          .style('text-anchor', 'middle')
+          .style('font-size', '14');
+        svg.append('text')
+          .text('Damage')
+          .attr('x', chartWidth - 20)
+          .attr('y', chartHeight / 2)
+          .style('font-family', 'Arial')
+          .style('fill', '#A6A1FA')
+          .style('font-weight', 'bold')
+          .style('text-anchor', 'middle')
+          .style('font-size', '14');
         function jitter() {
-          return (Math.random() * 10) - 5;
+          return (Math.random() * 30) - 15;
+          //return 0;
         }
 
         var colorMap = {};
@@ -185,8 +205,8 @@
           svg.append("mask")
             .attr("id", "image-mask" + d.name)
             .append("image")
-            .attr('x', x)
-            .attr('y', y)
+            .attr('x', x - 25)
+            .attr('y', y - 25)
             .attr('width', 50)
             .attr('height', 50)
             .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg");
@@ -201,11 +221,11 @@
           svg.append('text')
             .attr('fill', color)
             .text(d.name)
-            .attr('x', x)
-            .attr('y', y + 60)
+            .attr('x', x - 25)
+            .attr('y', y + 60 - 25)
             .style('font-family', 'Arial')
             .style('font-size', '12px')
-            .style('opacity', 0.7)
+            .style('opacity', 1)
             .style('text-align', 'center');
         });
 
@@ -232,12 +252,12 @@
           } else {
             if (y > (hpExtent[0] + hpExtent[1]) / 2) {
               quad2_count++;
-
               // Check speed in this quadrant
               if (speed > 66) {
                 quad2_speed++;
               }
             } else {
+
               quad3_count++;
 
               // Check speed in this quadrant
@@ -256,7 +276,6 @@
         console.log(quad3_speed);
         console.log("Low Damage, High Health Count:", quad2_count);
         console.log(quad2_speed);
-
 
 
         //key rectangle
@@ -358,7 +377,7 @@
         .range([0, width2]);
       //Adds Title to Graph
       title2.append('text')
-        .text("Step into the captivating realm of the Pokeball, where we delve into the speed of these extraordinary creatures. Remarkably, each Pokeball")
+        .text("These pokeballs show which percentage of Pokemon in the above quadrants are considered fast. Any Pokemon whose speed is above the average of 66")
         .attr('font-size', 30)
         .attr('x', width2 / 2)
         .attr('y', 72)
@@ -366,7 +385,7 @@
         .attr('class', 'description');
 
       title2.append('text')
-        .text(" highlights those of speed above the the average of 66 for each quartile, revealing the elite champions among these Pokemons.")
+        .text("is considered fast. These pokeballs highlight which quadrant, and subsequently which traits, are associated with high speed. ")
         .attr('x', width2 / 2)
         .attr('y', 88)
         .attr('class', 'description')
@@ -381,7 +400,7 @@
       ];
 
       const quad_names = [
-        'Hunky Chunky',
+        'Juggernauts',
         'Tanks',
         'Fragile Bois',
         'Glass Cannons'
