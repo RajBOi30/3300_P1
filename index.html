@@ -3,231 +3,406 @@
 <head>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    .gridlines line {
-      stroke: #bbb;
+    .gridlines {
+      stroke: #A6A1FA;
     }
+
+    .gridlines line {
+      stroke: #A6A1FA;
+    }
+
 
     .gridlines .domain {
       stroke: none;
+    }
+
+    .axis-label {
+      fill: #FFFFFF;
+
+    }
+
+    .quadrant-title {
+      fill: white;
+      font-size: 28px;
+      font-family: Impact;
+      font-weight: bold;
+    }
+
+    .pie_title {
+      fill: white;
+      font-size: 28px;
+      font-family: Impact;
+      font-weight: bold;
+    }
+
+    .description {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      fill: #201C67;
+      opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
-  <h3>
-    Graph 1: Visualizing the relationship between Pokemon Health and Damage.
-  </h3>
-  <svg id="graph1" height="700" width="1000" style="background:beige"></svg>
+  <svg id="title1" height="100" width="1000" style="background:#A6A1FA"></svg>
+  <svg id="graph1" height="700" width="1000" style="background:#201C67"></svg>
+  <svg id="graph2" height="600" width="920" style="background:#4C4A82"></svg>
   <script>
+
+    const title1 = d3.select('svg#title1');
     const svg = d3.select('svg#graph1');
     const margins = { top: 10, right: 10, bottom: 10, left: 10 };
+    const titleWidth = svg.attr("width") - margins.right - margins.left;
+    const titleHeight = svg.attr("height") - margins.top - margins.bottom;
     const chartWidth = svg.attr("width") - margins.right - margins.left;
     const chartHeight = svg.attr("height") - margins.top - margins.bottom;
 
-    d3.csv('pokemon_data.csv').then(data => {
-      console.log(data);
+    title1.append('text')
+      .text("Pokemon Power Chart: Top 50 Most Popular")
+      .attr('x', chartWidth / 2)
+      .attr('y', 48)
+      .style('font-family', 'Impact')
+      .style('font-size', '32')
+      .style("text-anchor", "middle")
+      .style('fill', '#201C67');
 
-      const attackExtent = d3.extent(data, d => Number(d.attack));
-      const hpExtent = d3.extent(data, d => Number(d.hp));
-
-      const xScale = d3.scaleLinear().domain([attackExtent[0] - 5, attackExtent[1]]).range([0, chartWidth]);
-      const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
-
-      let verticalAxis = d3.axisLeft(yScale);
-      svg.append('g')
-        .attr('transform', `translate(${margins.left + chartWidth / 2}, ${margins.top})`)
-        .call(verticalAxis);
-
-      let horizontalAxis = d3.axisBottom(xScale);
-      svg.append('g')
-        .attr('transform', `translate(${margins.left}, ${margins.top + chartHeight / 2})`)
-        .call(horizontalAxis);
-
-      svg.append('text')
-        .text("Hunky Chunky")
-        .attr('font-size', 30)
-        .attr('x', chartWidth - 200)
-        .attr('y', 50);
-      svg.append('text')
-        .text("High Damage, Low Health")
-        .attr('font-size', 20)
-        .attr('x', chartWidth - 200)
-        .attr('y', chartHeight);
-      svg.append('text')
-        .text("Low Damage, High Health")
-        .attr('font-size', 20)
-        .attr('x', 0)
-        .attr('y', 20);
-      svg.append('text')
-        .text("Low Damage, Low Health")
-        .attr('font-size', 20)
-        .attr('x', 0)
-        .attr('y', chartHeight);
-
-
-      function jitter() {
-        return (Math.random() * 20) - 10;
-      }
-
-      var colorMap = {};
-      colorMap['normal'] = 'pink';
-      colorMap['fire'] = 'orange';
-      colorMap['water'] = 'blue';
-      colorMap['grass'] = 'green';
-      colorMap['electric'] = 'yellow';
-      colorMap['fighting'] = 'red';
-      colorMap['ground'] = 'brown';
-      colorMap['psychic'] = 'magenta';
-      colorMap['bug'] = 'light green';
-      colorMap['dragon'] = 'dark blue';
-      colorMap['rock'] = 'gray';
-      colorMap['ghost'] = 'dark purple';
-      colorMap['dark'] = 'black';
-      colorMap['steel'] = 'light blue';
-
-      data.forEach(d => {
-        let x = xScale(d.attack) + jitter();
-        let y = yScale(d.hp) + jitter();
-
-        if (x > 900) {
-          x -= 50;
-        }
-        if (y > 600) {
-          y -= 50;
-        }
-
-        let color = colorMap[d.type];
-
-        svg.append("mask")
-          .attr("id", "image-mask" + d.name)
-          .append("image")
-          .attr('x', x)
-          .attr('y', y)
-          .attr('width', 50)
-          .attr('height', 50)
-          .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg");
-
-        // Add purple rectangle to be clipped by the mask
-        svg.append("rect")
-          .attr("fill", color)
-          .attr("width", "100%")
-          .attr("height", "100%")
-          .attr("mask", "url(#image-mask" + d.name + ")"); // Apply mask
-      });
-
-      //key rectangle
-
-      const keyXPos = chartWidth - 200;
-      const keyYPos = chartHeight - 220;
-      const keyWidth = 200;
-      const keyHeight = 180;
-
-      svg.append('rect')
-        .attr('x', keyXPos)
-        .attr('y', keyYPos)
-        .attr('width', keyWidth)
-        .attr('height', keyHeight)
-        .attr('fill', "white");
-
-      const typeColors = [
-        { type: 'normal', color: 'pink' },
-        { type: 'fire', color: 'orange' },
-        { type: 'water', color: 'blue' },
-        { type: 'grass', color: 'green' },
-        { type: 'electric', color: 'yellow' },
-        { type: 'fighting', color: 'red' },
-        { type: 'ground', color: 'brown' },
-        { type: 'psychic', color: 'magenta' },
-        { type: 'bug', color: 'lightgreen' },
-        { type: 'dragon', color: 'darkblue' },
-        { type: 'rock', color: 'gray' },
-        { type: 'ghost', color: 'darkpurple' },
-        { type: 'dark', color: 'black' },
-        { type: 'steel', color: 'lightblue' },
-      ];
-
-      //svg for key
-      const key = svg.append('g').attr('class', 'key').attr('transform', 'translate(10, 10)');
-
-      //two columns for key
-      const columns = key.selectAll('.column')
-        .data([typeColors.slice(0, Math.ceil(typeColors.length / 2)), typeColors.slice(Math.ceil(typeColors.length / 2))])
-        .enter()
-        .append('g')
-        .attr('class', 'column')
-        .attr('transform', (d, i) => `translate(${i * 100}, 0)`);
-
-      columns.each(function (columnData, columnIndex) {
-        d3.select(this).selectAll('.key-item')
-          .data(columnData)
-          .enter()
-          .append('g')
-          .attr('class', 'key-item')
-          .attr('transform', (d, i) => `translate(0, ${i * 20})`)
-          .append('circle')
-          .attr('cx', chartWidth - keyWidth + 18)
-          .attr('cy', chartHeight - keyHeight - 20)
-          .attr('r', 7)
-          .attr('fill', d => d.color);
-
-        d3.select(this).selectAll('.key-item')
-          .append('text')
-          .attr('x', chartWidth - keyWidth + 28)
-          .attr('y', (d, i) => chartHeight - keyHeight - 16.5)
-          .text(d => d.type);
-      });
-
-    });
-  </script>
-  <h3>
-    Graph 2: Visualizing the relationship between quadrant and speed.
-  </h3>
-  <svg id="graph2" height="600" width="920" style="background:beige"></svg>
-  <script>
-    const svg2 = d3.select("svg#graph2");
-    const height2 = svg2.attr("height");
-    const width2 = svg2.attr("width");
-    //Percent of pokeball fill
-    const percentage = 70
-    const imageSize = 230
-
-    let changeScale = d3.scaleLinear()
-      .domain([0, 4])
-      .range([0, width2]);
-    //Adds Title to Graph
-    svg2.append('text')
-      .text("Pokemon Pies")
-      .attr('font-size', 30)
-      .attr('x', width2 / 2)
-      .attr('y', 100)
+    title1.append('text')
+      .text("Welcome to the world of Pokemon where we explore the secret sauce behind what makes these Pokemon the most sought-after champions in")
+      .attr('x', chartWidth / 2)
+      .attr('y', 72)
+      .attr('class', 'description')
       .style("text-anchor", "middle");
 
-    for (let i = 0; i < 4; i++) {
-      //Adds Pokeball image
-      svg2.append('image')
-        .attr('xlink:href', "pokeball.png")
-        .attr('x', changeScale(i))
-        .attr('y', height2 / 2 - (imageSize / 2))
-        .attr('width', imageSize)
-        .attr('height', imageSize);
-      //Adds overlay to pokeball
-      svg2.append("path")
-        .attr("d", d3.arc()({
-          innerRadius: 0,
-          outerRadius: 100,
-          startAngle: 0,
-          endAngle: ((100 - percentage) / 100) * 2 * Math.PI
-        }))
-        .attr("transform", `translate(${parseInt(changeScale(i)) + imageSize / 2},${height2 / 2})`)
-        .attr("fill", "beige");
-      //Adds Pies Name
+    title1.append('text')
+      .text("battles and adventures. Our x axis visualizes each pokemon's damage level and the y axis visualizes their health points.")
+      .attr('x', chartWidth / 2)
+      .attr('y', 88)
+      .attr('class', 'description')
+      .style("text-anchor", "middle");
+
+    // counters for quadrants + speed > 110
+    let quad1_count = 0;
+    let quad2_count = 0;
+    let quad3_count = 0;
+    let quad4_count = 0;
+
+    let quad1_speed = 0;
+    let quad2_speed = 0;
+    let quad3_speed = 0;
+    let quad4_speed = 0;
+
+    async function loadPokeball() {
+      await d3.csv('pokemon_data.csv').then(data => {
+        console.log(data);
+
+        const attackExtent = d3.extent(data, d => Number(d.attack));
+        const hpExtent = d3.extent(data, d => Number(d.hp));
+
+        const xScale = d3.scaleLinear().domain([attackExtent[0] - 5, attackExtent[1]]).range([0, chartWidth]);
+        const yScale = d3.scaleLinear().domain([hpExtent[0], hpExtent[1] + 5]).range([chartHeight, 0]);
+
+
+        // arrows
+        let verticalAxis = d3.axisLeft(yScale);
+        let yAxisGroup = svg.append('g')
+          .attr('transform', `translate(${margins.left + chartWidth / 2}, ${margins.top})`)
+          .attr('class', 'gridlines')
+          .call(verticalAxis);
+
+
+        let horizontalAxis = d3.axisBottom(xScale);
+        let xAxisGroup = svg.append('g')
+          .attr('transform', `translate(${margins.left}, ${margins.top + chartHeight / 2})`)
+          .attr('class', 'gridlines')
+          .call(horizontalAxis);
+
+        yAxisGroup.select('path')
+          .style('stroke', '#A6A1FA');
+
+        xAxisGroup.select('path')
+          .style('stroke', '#A6A1FA');
+
+
+
+        svg.append('text')
+          .text("Offensive Juggernauts")
+          .attr('x', chartWidth - 180)
+          .attr('y', 50)
+          .style('text-anchor', 'end')
+          .attr('class', 'quadrant-title');
+        svg.append('text')
+          .text("Glass Cannons")
+          .attr('x', chartWidth - 180)
+          .attr('y', chartHeight)
+          .attr('class', 'quadrant-title');
+        svg.append('text')
+          .text("Tanks")
+          .attr('x', 40)
+          .attr('y', 50)
+          .attr('class', 'quadrant-title');
+        svg.append('text')
+          .text("Fragile Bois")
+          .attr('x', 40)
+          .attr('y', chartHeight)
+          .attr('class', 'quadrant-title');
+
+
+
+
+        function jitter() {
+          return (Math.random() * 20) - 10;
+        }
+
+        var colorMap = {};
+        colorMap['normal'] = '#FEC1C1';
+        colorMap['fire'] = '#FF6442';
+        colorMap['water'] = '#94D8FF';
+        colorMap['grass'] = '#C8F282';
+        colorMap['electric'] = '#EFD54F';
+        colorMap['fighting'] = '#E2315C';
+        colorMap['ground'] = '#FFA57E';
+        colorMap['psychic'] = '#CC66CE';
+        colorMap['bug'] = '#7DCEBB';
+        colorMap['dragon'] = '#FB5C82';
+        colorMap['rock'] = '#FFAA29';
+        colorMap['ghost'] = '#FFFFFF';
+        colorMap['dark'] = '#B692EF';
+        colorMap['steel'] = '#588DCA';
+
+        data.forEach(d => {
+          let x = xScale(d.attack) + jitter();
+          let y = yScale(d.hp) + jitter();
+
+          if (x > 900) {
+            x -= 50;
+          }
+          if (y > 600) {
+            y -= 50;
+          }
+
+          let color = colorMap[d.type];
+
+          svg.append("mask")
+            .attr("id", "image-mask" + d.name)
+            .append("image")
+            .attr('x', x)
+            .attr('y', y)
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("xlink:href", "pokemon_svg/" + (d.name).toLowerCase() + ".svg");
+
+          // Add purple rectangle to be clipped by the mask
+          svg.append("rect")
+            .attr("fill", color)
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("mask", "url(#image-mask" + d.name + ")"); // Apply mask
+
+          svg.append('text')
+            .attr('fill', color)
+            .text(d.name)
+            .attr('x', x)
+            .attr('y', y + 60)
+            .style('font-family', 'Arial')
+            .style('font-size', '12px')
+            .style('opacity', 0.7)
+            .style('text-align', 'center');
+        });
+
+
+
+        data.forEach(d => {
+          let x = d.attack;
+          let y = d.hp;
+          let speed = Number(d.speed);
+
+          if (x > (attackExtent[0] + attackExtent[1]) / 2) {
+            if (y > (hpExtent[0] + hpExtent[1]) / 2) {
+              quad1_count++;
+
+              if (speed > 66) {
+                quad1_speed++;
+              }
+            } else {
+              quad4_count++;
+
+              // Check speed in this quadrant
+              if (speed > 66) {
+                quad4_speed++;
+              }
+            }
+          } else {
+            if (y > (hpExtent[0] + hpExtent[1]) / 2) {
+              quad2_count++;
+
+              // Check speed in this quadrant
+              if (speed > 66) {
+                quad2_speed++;
+              }
+            } else {
+              quad3_count++;
+
+              // Check speed in this quadrant
+              if (speed > 66) {
+                quad3_speed++;
+              }
+            }
+          }
+        });
+
+        console.log("High Damage, Low Health Count:", quad4_count);
+        console.log(quad4_speed);
+        console.log("High Damage, High Health Count:", quad1_count);
+        console.log(quad1_speed);
+        console.log("Low Damage, Low Health Count:", quad3_count);
+        console.log(quad3_speed);
+        console.log("Low Damage, High Health Count:", quad2_count);
+        console.log(quad2_speed);
+
+
+
+        //key rectangle
+
+        const keyXPos = chartWidth - 200;
+        const keyYPos = chartHeight - 230;
+        const keyWidth = 200;
+        const keyHeight = 200;
+
+        svg.append('rect')
+          .attr('x', keyXPos)
+          .attr('y', keyYPos)
+          .attr('width', keyWidth)
+          .attr('height', keyHeight)
+          .attr('fill', "white")
+          .style('opacity', '0.2')
+          .attr('rx', 10)
+          .attr('ry', 10);
+
+        const typeColors = [
+          { type: 'normal', color: '#FEC1C1' },
+          { type: 'fire', color: '#FF6442' },
+          { type: 'water', color: '#94D8FF' },
+          { type: 'grass', color: '#C8F282' },
+          { type: 'electric', color: '#EFD54F' },
+          { type: 'fighting', color: '#E2315C' },
+          { type: 'ground', color: '#FFA57E' },
+          { type: 'psychic', color: '#CC66CE' },
+          { type: 'bug', color: '#7DCEBB' },
+          { type: 'dragon', color: '#FB5C82' },
+          { type: 'rock', color: '#FFAA29' },
+          { type: 'ghost', color: '#FFFFFF' },
+          { type: 'dark', color: '#B692EF' },
+          { type: 'steel', color: '#588DCA' },
+        ];
+
+
+        //svg for key
+        const key = svg.append('g').attr('class', 'key').attr('transform', 'translate(10, 10)');
+        svg.append('text').text("Pokemon Type")
+          .attr('x', chartWidth - 185)
+          .attr('y', chartHeight - 200)
+          .style('font-family', 'Arial')
+          .style('fill', 'white')
+          .style('font-weight', 'bold')
+          .style('font-size', '16');
+
+        //two columns for key
+        const columns = key.selectAll('.column')
+          .data([typeColors.slice(0, Math.ceil(typeColors.length / 2)), typeColors.slice(Math.ceil(typeColors.length / 2))])
+          .enter()
+          .append('g')
+          .attr('class', 'column')
+          .attr('transform', (d, i) => `translate(${i * 100}, 0)`);
+
+        columns.each(function (columnData, columnIndex) {
+          d3.select(this).selectAll('.key-item')
+            .data(columnData)
+            .enter()
+            .append('g')
+            .attr('class', 'key-item')
+            .attr('transform', (d, i) => `translate(0, ${i * 20})`)
+            .append('circle')
+            .attr('cx', chartWidth - keyWidth + 12)
+            .attr('cy', chartHeight - keyHeight + 10)
+            .attr('r', 7)
+            .attr('fill', d => d.color);
+
+          d3.select(this).selectAll('.key-item')
+            .append('text')
+            .attr('x', chartWidth - keyWidth + 22)
+            .attr('y', (d, i) => chartHeight - keyHeight + 14)
+            .text(d => d.type)
+            .style('fill', 'white')
+            .style('font-family', 'Arial')
+            .style('font-size', '14');
+        });
+
+      });
+      const svg2 = d3.select("svg#graph2");
+      const height2 = svg2.attr("height");
+      const width2 = svg2.attr("width");
+      //Percent of pokeball fill
+      const percentage = 70
+      const imageSize = 230
+
+      let changeScale = d3.scaleLinear()
+        .domain([0, 4])
+        .range([0, width2]);
+      //Adds Title to Graph
       svg2.append('text')
-        .text("Q" + (i + 1))
+        .text("High Speed Pokemon Percentages")
         .attr('font-size', 30)
-        .attr('x', (parseInt(changeScale(i)) + imageSize / 2))
-        .attr('y', 500)
+        .attr('x', width2 / 2)
+        .attr('y', 100)
         .style("text-anchor", "middle");
+
+      // calculate percentage with high speed per quadrant
+      const percentages = [
+        quad1_speed / quad1_count * 100,
+        quad2_speed / quad2_count * 100,
+        quad3_speed / quad3_count * 100,
+        quad4_speed / quad4_count * 100,
+      ];
+
+      const quad_names = [
+        'Hunky Chunky',
+        'Tanks',
+        'Fragile Bois',
+        'Glass Cannons'
+      ]
+
+      for (let i = 0; i < 4; i++) {
+        //Adds Pokeball image
+        svg2.append('image')
+          .attr('xlink:href', "pokeball.png")
+          .attr('x', changeScale(i))
+          .attr('y', height2 / 2 - (imageSize / 2))
+          .attr('width', imageSize)
+          .attr('height', imageSize);
+        //Adds overlay to pokeball
+        svg2.append("path")
+          .attr("d", d3.arc()({
+            innerRadius: 0,
+            outerRadius: 98,
+            startAngle: 0,
+            endAngle: ((100 - percentages[i]) / 100) * 2 * Math.PI
+          }))
+          .attr("transform", `translate(${parseInt(changeScale(i)) + imageSize / 2},${height2 / 2})`)
+          .attr("fill", "black");
+        //Adds Pies Name
+        svg2.append('text')
+          .text(quad_names[i])
+          .attr('font-size', 30)
+          .attr('x', (parseInt(changeScale(i)) + imageSize / 2))
+          .attr('y', 500)
+          .style("text-anchor", "middle")
+          .attr('class', 'pie-title');
+      }
     }
+
+    loadPokeball();
+
   </script>
 
 
